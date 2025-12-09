@@ -20,38 +20,96 @@ st.set_page_config(
 # Réduire les logs TensorFlow
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-# CSS personnalisé
+# CSS personnalisé avec fond violet
 st.markdown("""
 <style>
+    /* Fond violet pour toute l'application */
+    [data-testid="stAppViewContainer"] {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
     .main-header {
         font-size: 3rem;
-        color: #1DB954;
+        color: white;
         text-align: center;
         margin-bottom: 2rem;
         font-weight: bold;
     }
-    .sub-header {
-        font-size: 1.5rem;
-        color: #FFFFFF;
+    
+    .landing-title {
+        font-size: 4rem;
+        font-weight: bold;
+        color: white;
+        text-align: center;
         margin-bottom: 1rem;
     }
+    
+    .landing-subtitle {
+        font-size: 1.8rem;
+        color: white;
+        text-align: center;
+        margin-bottom: 3rem;
+        opacity: 0.9;
+    }
+    
+    .info-section {
+        background: rgba(255, 255, 255, 0.15);
+        padding: 30px;
+        border-radius: 20px;
+        margin: 10px;
+        text-align: left;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        height: 100%;
+    }
+    
+    .info-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: white;
+        text-align: center;
+    }
+    
+    .info-content {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: rgba(255, 255, 255, 0.95);
+    }
+    
+    .start-button-container {
+        text-align: center;
+        margin: 40px 0;
+    }
+    
+    .sub-header {
+        font-size: 1.5rem;
+        color: white;
+        margin-bottom: 1rem;
+    }
+    
     .emotion-display {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: rgba(255, 255, 255, 0.2);
         padding: 20px;
         border-radius: 10px;
         text-align: center;
         margin: 20px 0;
-        border: 2px solid #1DB954;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
     }
+    
     .recommendation-section {
-        background: #2d2d2d;
+        background: rgba(255, 255, 255, 0.1);
         padding: 25px;
         border-radius: 15px;
         margin: 20px 0;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
+    
     .stButton>button {
-        background: linear-gradient(135deg, #1DB954 0%, #1ed760 100%);
-        color: white;
+        background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
+        color: #667eea;
         border: none;
         padding: 12px 24px;
         border-radius: 25px;
@@ -59,40 +117,98 @@ st.markdown("""
         font-weight: bold;
         width: 100%;
     }
+    
     .stTextInput>div>div>input {
-        background-color: #2d2d2d;
-        color: white;
-        border: 1px solid #1DB954;
+        background-color: rgba(255, 255, 255, 0.9);
+        color: #333;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Style pour les messages info */
+    .stInfo {
+        background: rgba(255, 255, 255, 0.15) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        color: white !important;
+    }
+    
+    /* Style pour les messages d'erreur et warning */
+    .stAlert {
+        background: rgba(255, 255, 255, 0.15) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        color: white !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# Header principal
-st.markdown('<div class="main-header">🎵 Music Emotion Recommender</div>', unsafe_allow_html=True)
-
-# Sidebar pour les informations
-with st.sidebar:
-    st.markdown("### 📋 Instructions")
-    st.markdown("""
-    1. **Configurez** votre langue et artiste préféré
-    2. **Autorisez** l'accès à la caméra
-    3. **Attendez** que votre émotion soit détectée
-    4. **Cliquez** sur le bouton de recommandation
-    """)
-    
-    st.markdown("### ℹ️ À propos")
-    st.markdown("""
-    Cette application utilise l'IA pour:
-    - Détecter vos émotions via la caméra
-    - Recommander de la musique adaptée
-    - Créer une playlist personnalisée
-    """)
-
 # Initialisation des variables de session
+if 'app_started' not in st.session_state:
+    st.session_state.app_started = False
 if 'emotion_detected' not in st.session_state:
     st.session_state.emotion_detected = ""
 if 'recommendations_ready' not in st.session_state:
     st.session_state.recommendations_ready = False
+
+# PAGE D'ACCUEIL
+if not st.session_state.app_started:
+    # Titre principal
+    st.markdown('<div class="landing-title">MUSIC EMOTION</div>', unsafe_allow_html=True)
+    st.markdown('<div class="landing-title">RECOMMENDER</div>', unsafe_allow_html=True)
+    st.markdown('<div class="landing-subtitle">Discover Music That Feels Like You.</div>', unsafe_allow_html=True)
+    
+    # Sections en colonnes
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("""
+        <div class="info-section">
+            <div class="info-title">📋 Instructions</div>
+            <div class="info-content">
+                <p><strong>Suivez ces étapes :</strong></p>
+                <ol>
+                    <li><strong>Configurez</strong> votre langue et artiste préféré</li>
+                    <li><strong>Autorisez</strong> l'accès à la caméra</li>
+                    <li><strong>Attendez</strong> que votre émotion soit détectée</li>
+                    <li><strong>Cliquez</strong> sur le bouton de recommandation</li>
+                </ol>
+                <p><em>L'analyse est instantanée !</em></p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class="info-section">
+            <div class="info-title">ℹ À propos</div>
+            <div class="info-content">
+                <p><strong>Cette application utilise l'IA pour :</strong></p>
+                <ul>
+                    <li>Détecter vos émotions via la caméra</li>
+                    <li>Recommander de la musique adaptée</li>
+                    <li>Créer une playlist personnalisée</li>
+                </ul>
+                <br>
+                <p style="text-align: center; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 15px;">
+                    <strong>🎵 Powered by AI</strong>
+                </p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Bouton Commencer
+    st.markdown('<div class="start-button-container">', unsafe_allow_html=True)
+    if st.button("🚀 Commencer l'expérience", key="start_btn", use_container_width=True):
+        st.session_state.app_started = True
+        st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    st.stop()
+
+# ============================================================================
+# APPLICATION PRINCIPALE
+# ============================================================================
+
+# Header principal
+st.markdown('<div class="main-header">🎵 Music Emotion Recommender</div>', unsafe_allow_html=True)
 
 # Section de configuration
 col1, col2 = st.columns(2)
@@ -168,7 +284,7 @@ class EmotionProcessor:
                 
                 # Affichage de l'émotion sur le flux vidéo
                 cv2.putText(frm, f"Emotion: {pred}", (50, 50), 
-                           cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                           cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
         # Dessin des landmarks
         if res.face_landmarks:
@@ -211,30 +327,29 @@ btn = st.button("🎵 Recommander des musiques", use_container_width=True)
 
 if btn:
     if not lang or not singer:
-        st.error("⚠️ Veuillez d'abord remplir la langue et l'artiste")
+        st.error("⚠ Veuillez d'abord remplir la langue et l'artiste")
     else:
-        with st.spinner("🔍 Recherche de musiques adaptées..."):
-            emotion_text = st.session_state.emotion_detected
-            
-            if not emotion_text:
-                try:
-                    loaded = np.load("emotion.npy", allow_pickle=True)
-                    emotion_text = str(loaded[0]) if isinstance(loaded, np.ndarray) else str(loaded)
-                    st.session_state.emotion_detected = emotion_text
-                except:
-                    emotion_text = ""
+        # Relire l'émotion la plus récente depuis le fichier
+        try:
+            loaded = np.load("emotion.npy", allow_pickle=True)
+            st.session_state.emotion_detected = str(loaded[0])
+        except:
+            st.session_state.emotion_detected = ""
 
-            if not emotion_text:
-                st.warning("⏳ Veuillez attendre que votre émotion soit détectée par la caméra")
-            else:
+        emotion_text = st.session_state.emotion_detected
+
+        if not emotion_text:
+            st.warning("⏳ Veuillez attendre que votre émotion soit détectée par la caméra")
+        else:
+            with st.spinner("🔍 Recherche de musiques adaptées..."):
                 # Affichage des paramètres de recherche
                 st.markdown(f"""
-                <div style='background: #1a1a1a; padding: 15px; border-radius: 10px; margin: 15px 0;'>
-                    <h4>🔍 Paramètres de recherche:</h4>
-                    <p><strong>Langue:</strong> {lang} | <strong>Artiste:</strong> {singer} | <strong>Émotion:</strong> {emotion_text}</p>
+                <div style='background: rgba(255, 255, 255, 0.15); padding: 15px; border-radius: 10px; margin: 15px 0;'>
+                    <h4 style='color: white;'>🔍 Paramètres de recherche:</h4>
+                    <p style='color: white;'><strong>Langue:</strong> {lang} | <strong>Artiste:</strong> {singer} | <strong>Émotion:</strong> {emotion_text}</p>
                 </div>
                 """, unsafe_allow_html=True)
-                
+
                 try:
                     # Recherche YouTube
                     search_query = f"{lang} {emotion_text} {singer} song"
@@ -252,7 +367,7 @@ if btn:
                         # Affichage de la playlist
                         st.markdown('<div class="recommendation-section">', unsafe_allow_html=True)
                         st.markdown("### 🎶 Votre playlist personnalisée")
-                        
+
                         components.html(
                             f"""
                             <iframe width="100%" height="450"
@@ -264,24 +379,24 @@ if btn:
                             """,
                             height=500,
                         )
-                        
+
                         # Liste des vidéos recommandées
                         st.markdown("### 📋 Titres recommandés")
                         for i, video in enumerate(results, 1):
                             st.write(f"{i}. {video.title}")
-                            
+
                         st.markdown('</div>', unsafe_allow_html=True)
-                        
+
                     else:
                         st.error("❌ Aucune vidéo trouvée pour cette recherche. Essayez avec d'autres paramètres.")
-                        
+
                 except Exception as e:
                     st.error(f"❌ Erreur lors de la recherche: {e}")
 
 # Footer
 st.markdown("---")
 st.markdown(
-    "<div style='text-align: center; color: #666; margin-top: 50px;'>"
+    "<div style='text-align: center; color: white; margin-top: 50px; opacity: 0.8;'>"
     "🎵 Détection d'émotion et recommandation musicale • Powered by AI"
     "</div>", 
     unsafe_allow_html=True
